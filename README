@@ -1,0 +1,40 @@
+Enuntul temei:
+https://pcom.pages.upb.ro/enunt-tema4/
+
+Am inceput implementarea pornind de la laboratorul 9, am modificat
+functiile compute_get_request() si compute_post_request() si am adaugat
+compute_delete_request, am adaugat functionalitatea cu JSON si token. 
+
+Logica programului este implementata in client.c, iar requests.c si
+requests.h contin implementarile pentru functiile care construiesc 
+cereri HTTP de tip POST, GET si DELETE.
+Fisierele buffer.c, buffer.h, helpers.c si helpers.h contin diverse 
+functii auxiliare pentru conectarea la server, trimiterea si primirea pachetelor.
+Pentru lucrul cu Json-ul, am ales sa folosesc parson.c si parson.h, 
+recomandate in link-urile din enuntul temei.
+
+In client, pun IP-ul si portul serverului in variabile globale si imi setez
+macro-uri cu rutele de acces date in enenuntul temei. 
+Am definit si o functie auxiliara create_json_payload pentru crearea payload-ului
+la register si login. 
+Comenzile pe care utilizatorul le poate da in interactiunea cu serverul sunt
+tratate in main, pe ramurile if-else astfel:
+
+-register: citesc de la tastatura username-ul si parola introduse de utilizator,
+    verific daca sunt valide(sa nu contina spatii), caz in care afisez un mesaj de 
+    eroare si programul iese din while. Altfel, deschid conexiunea, creez payload-ul
+    si trimit o cerere catre server. 
+-login: in mod similar, trimit o cerere catre server, iar din raspunsul acestuia
+    iau cookie-ul se sesiune lucrand cu string-uri.
+-enter_library: trimit cerere catre server, iar din raspuns iau taken-ul JWT
+-get_books: trimit o cerere pentru a putea afla lista de carti din biblioteca
+    Response va zice daca utilizatorul are sau nu acces la biblioteca.
+-add_book: citesc field-urile cartii de la tastatura introduse de utilizator si 
+    trimit o cerere la server pentru a o adauga. Am adaugat o verificare pentru
+    field-ul corespunzator numarului de pagini(datele introduse trebuie sa reprezinte
+    un numar).
+-get_book: citesc id-ul cartii si trimit o cerere pentru a-i afla detaliile. Raspunsul 
+    va fi luat de la server, indiferent de validitatea id-ului introdus.
+-delete_book: similar cu get_book
+-logout: trimit o cerere de logout si eliberez cookie-ul de sesiune si token-ul.
+-exit: programul iese din while.
